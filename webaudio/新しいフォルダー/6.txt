@@ -1,0 +1,36 @@
+<button id="startmic">Start Mic</button><br/>
+
+<script type="text/javascript">
+var getUserMedia = navigator.getUserMedia ? 'getUserMedia' :
+    navigator.webkitGetUserMedia ? 'webkitGetUserMedia' :
+    navigator.mozGetUserMedia ? 'mozGetUserMedia' :
+    navigator.msGetUserMedia ? 'msGetUserMedia' :
+    undefined;
+var astream, micsrc;
+var conditions={audio:true, video:false};
+const Mic = () => {
+    navigator[getUserMedia](
+        conditions,
+        (stream) => {
+            astream=stream;
+            micsrc=audioctx.createMediaStreamSource(stream);
+            micsrc.connect(audioctx.destination);
+            micsrc.connect(analyser);
+        },
+        (e) => { console.error(e); }
+    );
+}
+
+// event handler
+document.querySelector("button#startmic").addEventListener("click", (event) => {
+    var label;
+    if(event.target.innerHTML=="Start Mic") {
+        Mic();
+        label="Stop Mic";
+    } else {
+        (astream.getAudioTracks())[0].stop();
+        label="Start Mic";
+    }
+    event.target.innerHTML=label;
+});
+</script>

@@ -1,0 +1,60 @@
+<button id="playsound" disabled>Start</button><br/>
+ReverbLevel : <input type="range" id="revlevel" min="0" max="100" value="50"/>
+<span id="revdisp">50</span>
+
+<script type="text/javascript">
+var audioctx = new AudioContext();
+var files = [
+    "loop.wav",
+    "s1_r1_bd.wav",
+];
+var source = null;
+var convolver = audioctx.createConvolver();
+var revlevel = audioctx.createGain();
+revlevel.gain.value=0.5;
+convolver.connect(revlevel);
+revlevel.connect(audioctx.destination);
+var buffers = [];
+var loadidx = 0;
+
+const LoadSample = (ctx, idx) => {
+  fetch(files[idx]).then( response => {
+    return response.arrayBuffer();
+  }).then( arrayBuffer => {
+    ctx.decodeAudioData(arrayBuffer, (b) => {buffers[idx]=b;}, () => {});
+    if(files.length==buffers.length) {
+      document.querySelector("button#playsound").removeAttribute("disabled");
+    }
+  });
+}
+
+for(var i=0; i<files.length; i++) {
+    LoadSample(audioctx, i);
+}
+</script>
+
+
+<script type="text/javascript">
+document.querySelector("button#playsound").addEventListener("click", (event) => {
+    var label;
+    if(event.target.innerHTML=="Stop") {
+        src.stop(0);
+        label="Start";
+    } else {
+        src = audioctx.createBufferSource();
+        src.buffer = buffers[0];
+        convolver.buffer = buffers[1];
+        src.loop = true;
+        src.connect(audioctx.destination);
+        src.connect(convolver);
+        src.start(0);
+        label="Stop";
+    }
+    event.target.innerHTML=label;
+});
+document.querySelector("input#revlevel").addEventListener("change", (event) => {
+    var lev=event.target.value;
+    revlevel.gain.value=parseInt(lev)*0.01;
+    document.querySelector("#revdisp").innerHTML=lev;
+});
+</script>

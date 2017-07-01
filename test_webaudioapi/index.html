@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>test_webaudioapi</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div id="greeting"></div>
+  
+<!--<button onclick="Play()" id="playsound">Play</button>-->
+<!--<button onclick="Stop()">Stop</button>-->
+
+<script type="text/javascript">
+
+  var audioctx = new AudioContext();
+  var src;
+  // const Play = () => {
+  //   src = audioctx.createOscillator();
+  //   src.connect(audioctx.destination);
+  //   src.start(0);
+  // }
+  
+  // const Stop = () => {
+  //   src.stop(0);
+  // }
+
+//   var t0 = 0;
+// // var t1 = t0 + tdur(180, 16);
+//   var t1 = 1;
+  document.onkeydown = function (e){
+  	// 出力テスト
+  	console.log(e);
+  	switch(e.key)
+  	{
+  	  case "z":
+        key_sound(60,1);
+        break;
+      case "s":
+        key_sound(61,1);
+  	    break;
+      case "x":
+        key_sound(62,1);
+  	    break;
+  	  case "d":
+        key_sound(63,1);
+  	    break;
+  	  case "c":
+        key_sound(64,1);
+  	    break;
+      case "v":
+        key_sound(65,1);
+  	    break;
+      case "g":
+        key_sound(66,1);
+  	    break;
+  	  case "b":
+        key_sound(67,1);
+  	    break;
+  	  case "h":
+        key_sound(68,1);
+  	    break;
+      case "n":
+        key_sound(69,1);
+  	    break;
+      case "j":
+        key_sound(70,1);
+  	    break;
+  	  case "m":
+        key_sound(71,1);
+  	    break;
+  	}
+  	
+    // console.log(mtof(src.frequency.value));
+    
+    function key_sound(midi_num,time){
+        src = audioctx.createOscillator();
+   	    src.frequency.value = mtof(midi_num);
+   	    src.type = "square";
+        src.connect(audioctx.destination);
+        src.start(audioctx.currentTime);
+        // console.log(audioctx.currentTime);//ブラウザ起動からの絶対時間
+        src.stop(audioctx.currentTime + time);
+    }
+
+  };
+  function mtof(midi) {
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+  
+  function tdur(tempo, length) {
+    return (60 / tempo) * (4 / length);
+  }
+</script>
+
+<script src="main.js"></script> 
+</body>
+</html>

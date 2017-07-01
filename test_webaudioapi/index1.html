@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>test_webaudioapi</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div id="greeting"></div>
+  <button onclick="Play()">Play</button>
+  <button onclick="Stop()">Stop</button>
+  
+  <script type="text/javascript">
+    var audioctx = new AudioContext();
+    var osc;
+    
+    const Play = () => {
+      osc = audioctx.createOscillator();// 波形、再生のたびに使い捨て
+      osc.connect(audioctx.destination);
+      osc.start(0);
+    }
+    
+    const Stop = () => {
+      osc.stop(0);
+    }
+    
+  </script>
+  <script src="main.js"></script> 
+</body>
+</html>

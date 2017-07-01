@@ -1,0 +1,71 @@
+<button id="playsound" disabled>Play</button><br/>
+<table>
+  <tr><td>Bypass :</td><td><input id="bypass" type="checkbox"/></td></tr>
+  <tr><td>Time : </td><td><input type="text" size="8" id="time" value="0.25"/></td></tr>
+  <tr><td>Feedback : </td><td><input type="text" size="8" id="feedback" value="0.4"/></td></tr>
+  <tr><td>Mix : </td><td><input type="text" size="8" id="mix" value="0.4"/></td></tr>
+</table>
+
+<script type="text/javascript">
+  var audioctx = new AudioContext();
+ 
+  var buffer = null;
+  var src = null;
+  var input = audioctx.createGain(); 
+  var delay = audioctx.createDelay(); 
+  var wetgain = audioctx.createGain(); 
+  var drygain = audioctx.createGain(); 
+  var feedback = audioctx.createGain(); 
+
+  input.connect(delay);
+  input.connect(drygain);
+  delay.connect(wetgain);
+  delay.connect(feedback);
+  feedback.connect(delay);
+  wetgain.connect(audioctx.destination);
+  drygain.connect(audioctx.destination);
+
+  const LoadSample = (ctx, url) => {
+    fetch(url).then( response => {
+      return response.arrayBuffer();
+    }).then( arrayBuffer => {
+      ctx.decodeAudioData(arrayBuffer, (b) => {buffer=b;}, () => {});
+      document.querySelector("button#playsound").removeAttribute("disabled");
+    });
+  }
+  LoadSample(audioctx, "./loop.wav");
+</script>
+  
+<script type="text/javascript">
+  const Setup = () => {
+    var bypass = document.getElementById("bypass").checked;
+    delay.delayTime.value = parseFloat(document.getElementById("time").value);
+    feedback.gain.value = parseFloat(document.getElementById("feedback").value);
+    var mix = parseFloat(document.getElementById("mix").value);
+    if(bypass) mix = 0;
+      wetgain.gain.value = mix;
+      drygain.gain.value = 1 - mix;
+  }
+
+  document.querySelector("button#playsound").addEventListener("click", (event) => {
+    var label; 
+    if(event.target.innerHTML=="Stop") {
+      src.stop(0);
+      label="Start";
+    } else {
+      src = audioctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      src.connect(input);
+      src.start(0);
+      label="Stop";
+    }
+    event.target.innerHTML=label;
+  });
+  document.querySelector("input#bypass").addEventListener("change", Setup);
+  document.querySelector("input#time").addEventListener("change", Setup);
+  document.querySelector("input#feedback").addEventListener("change", Setup);
+  document.querySelector("input#mix").addEventListener("change", Setup);
+
+  Setup();
+</script>

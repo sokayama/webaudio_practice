@@ -1,0 +1,9 @@
+<button onclick="Play()">Play</button>
+<script type="text/javascript">
+var audioctx = new AudioContext();
+var osc = audioctx.createOscillator();
+osc.connect(audioctx.destination);
+const Play = () => {
+  osc.start(0);
+}
+</script>

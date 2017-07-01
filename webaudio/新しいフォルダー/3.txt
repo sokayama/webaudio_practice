@@ -1,0 +1,20 @@
+<button onclick="Play()" id="playsound" disabled>Play</button>
+<script type="text/javascript">
+var audioctx = new AudioContext();
+var buffer = null;
+const Play = () => {
+  var src = audioctx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(audioctx.destination);
+  src.start(0);
+}
+const LoadSample = (ctx, url) => {
+  fetch(url).then( response => {
+    return response.arrayBuffer();
+  }).then( arrayBuffer => {
+    ctx.decodeAudioData(arrayBuffer, (b) => {buffer=b;}, () => {});
+    document.querySelector("button#playsound").removeAttribute("disabled");
+  });
+}
+LoadSample(audioctx, "./snare.wav");
+</script>
