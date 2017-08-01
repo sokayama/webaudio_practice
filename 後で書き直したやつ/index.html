@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>test_webaudioapi</title>
+  <!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+<body>
+<h1>webaudio</h1>
+<h2>press keys [Z,S,X,D,C,V,.....]</h2>
+
+<p>choose wave
+<select id="wave_type" size="1">
+  <option value="sine">sine</option>
+  <option value="square">square</option>
+  <option value="sawtooth">sawtooth</option>
+  <option value="triangle">triangle</option>
+</select>
+</p>
+
+<script type="text/javascript">
+
+window.addEventListener('load', function() {
+
+  const KEY_MAX = 20;
+  var audioctx = new AudioContext();
+  var src = [];
+  var oneShot = [];
+
+  for(var i=0;i<KEY_MAX;i++){
+    oneShot[i] = false;
+  }
+
+  var elem_wave_type = document.getElementById("wave_type");
+  var wave_type = "sine"
+  elem_wave_type.addEventListener("change",function(){
+    wave_type = elem_wave_type.value;
+  })
+
+  document.onkeydown = function (e){
+  	// 出力テスト
+  	console.log("keydown",e);
+  	switch(e.key)
+  	{
+  	  case "z":
+        key_sound_begin(0);
+        break;
+      case "s":
+        key_sound_begin(1);
+  	    break;
+      case "x":
+        key_sound_begin(2);
+  	    break;
+  	  case "d":
+        key_sound_begin(3);
+  	    break;
+  	  case "c":
+        key_sound_begin(4);
+  	    break;
+      case "v":
+        key_sound_begin(5);
+  	    break;
+      case "g":
+        key_sound_begin(6);
+  	    break;
+  	  case "b":
+        key_sound_begin(7);
+  	    break;
+  	  case "h":
+        key_sound_begin(8);
+  	    break;
+      case "n":
+        key_sound_begin(9);
+  	    break;
+      case "j":
+        key_sound_begin(10);
+  	    break;
+  	  case "m":
+        key_sound_begin(11);
+  	    break;
+  	  case ",":
+        key_sound_begin(12);
+  	    break;
+  	  case "l":
+        key_sound_begin(13);
+  	    break;
+  	  case ".":
+        key_sound_begin(14);
+  	    break;
+  	  case ";":
+        key_sound_begin(15);
+  	    break;
+  	  case "/":
+        key_sound_begin(16);
+  	    break;
+  	  case "\\":
+        key_sound_begin(17);
+  	    break;
+  	  case "]":
+        key_sound_begin(18);
+  	    break;
+  	}
+    // console.log(mtof(src.frequency.value));
+  };
+  document.onkeyup = function (e){
+  	// 出力テスト
+  	console.log("keyup",e);
+  	switch(e.key)
+  	{
+  	  case "z":
+        key_sound_finish(0);
+        break;
+      case "s":
+        key_sound_finish(1);
+  	    break;
+      case "x":
+        key_sound_finish(2);
+  	    break;
+  	  case "d":
+        key_sound_finish(3);
+  	    break;
+  	  case "c":
+        key_sound_finish(4);
+  	    break;
+      case "v":
+        key_sound_finish(5);
+  	    break;
+      case "g":
+        key_sound_finish(6);
+  	    break;
+  	  case "b":
+        key_sound_finish(7);
+  	    break;
+  	  case "h":
+        key_sound_finish(8);
+  	    break;
+      case "n":
+        key_sound_finish(9);
+  	    break;
+      case "j":
+        key_sound_finish(10);
+  	    break;
+  	  case "m":
+        key_sound_finish(11);
+  	    break;
+  	  case ",":
+        key_sound_finish(12);
+  	    break;
+  	  case "l":
+        key_sound_finish(13);
+  	    break;
+  	  case ".":
+        key_sound_finish(14);
+  	    break;
+  	  case ";":
+        key_sound_finish(15);
+  	    break;
+  	  case "/":
+        key_sound_finish(16);
+  	    break;
+  	  case "\\":
+        key_sound_finish(17);
+  	    break;
+  	  case "]":
+        key_sound_begin(18);
+  	    break;
+  	}
+    // console.log(mtof(src.frequency.value));
+  };
+  function key_sound_begin(num){
+    if(oneShot[num] == false){
+      src[num] = audioctx.createOscillator();
+      src[num].frequency.value = mtof(num + 60);
+      src[num].type = wave_type;
+      src[num].connect(audioctx.destination);
+      src[num].start(audioctx.currentTime);
+      //console.log(src[num]);//ブラウザ起動からの絶対時間
+    
+      oneShot[num] = true;
+    }
+  }
+
+  function key_sound_finish(num){
+    if(oneShot[num]){
+      src[num].stop(audioctx.currentTime);
+      //console.log("stopnow",src[num]);//ブラウザ起動からの絶対時間
+      oneShot[num] = false;
+    }
+}
+
+  function mtof(midi) {
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+});
+
+</script>
+
+</body>
+</html>
